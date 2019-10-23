@@ -1,0 +1,173 @@
+--------------------------------------------------------------------------------------------
+-------------------------------1.在外部进行亮暗缺陷的选择-----------------------------------
+-------------------------------2.高低（两个阈值）进行动态与之分割---------------------------
+-------------------------------3.函数输出量为缺陷的像素数目---------------------------------
+--------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------
+1.使用时配置ZxDefect.h、ZxDefect.lib和ZxDefect.dll文件，opencv3.0.0配置
+2.接口函数参数说明如下：
+// 函数功能:   检测图像缺陷
+// 函数返回值：零代表成功，非零代表失败
+// 函数输入值：pRxInfo  - 指向输入数据结构体指针
+//	       pRxDefResult - 指向输出数据结构体指针
+// 作者：
+// 版本：
+// 时间：
+int findDefect(RxDetInfo* pRxInfo, RxDefResult* pRxDefResult);
+
+
+// 函数功能: 当前检测结果复位，主要用于释放dll内部申请的内存以及缺陷统计信息清零
+// 函数返回值：无
+// 函数输入值：无 
+// 作者：
+// 版本：
+// 时间：
+void resetDefectInfo();
+
+
+// 输入待检测信息结构体
+typedef struct _tagRxDetInfo_{
+	unsigned int   uImgWidth;     // 图像像素宽
+	unsigned int   uImgHeight;    // 图像像素高
+	unsigned int   uImgChannel;   // 图像通道数
+	unsigned char* pImgPtr;       // 图像数据指针
+	int uDetLightDark;            // 亮暗缺陷的选择，亮缺陷为1，暗缺陷为-1
+	unsigned int   uMeanMaskSize; // 均值模板大小，范围3-100，最小值应为3，为奇数递增，默认值设为15
+	unsigned int   uLowThreshold; // 分割低阈值，范围0-100,默认值设为2
+	unsigned int   uHighThreshold;// 分割高阈值，范围0-100，默认值设为10，在实际操作的时候，高阈值的最小值应与当前低阈值相等，设置两个滑条联动实现
+	unsigned int   uLowTErodeNum; // 低阈值结果腐蚀次数，范围0-10，默认值设为0，一般情况下不用调节，当出现缺陷和非缺陷粘连的情况，可以调节此参数，使缺陷和非缺陷断开
+	unsigned int   uLowTDilateNum;// 低阈值结果膨胀次数，范围0-10，默认值设为0，一般情况下不用调节，当检测海绵状缺陷时可以将其调节为1，使检测出来的缺陷完整，具有连通性
+	unsigned int   uHighTErodeNum;// 高阈值结果(种子点)腐蚀次数，取值设置为0-10，默认值为0,一般情况下不用调节，此参数是为去除伪缺陷，确保得到的分割结果全部是真缺陷，是对高阈值分割结果的一个补充
+	unsigned int   uDilateNum;    // 重建结果膨胀次数，取值设置为0-10，默认值为0，一般情况下不用调节
+	unsigned int   uErodeNum;     // 重建结果腐蚀次数，取值设置为0-10，默认值为1，一般情况下不用调节 
+	unsigned int   uMinArea;      // 去除伪缺陷，当缺陷的面积小于uMinArea时，不对缺陷进行标注；取值设置为0-100，默认值为10；一般情况下不用调节
+	unsigned int   uMaxArea;      // 去除伪缺陷，当缺陷的面积大于uMaxArea时，不对缺陷进行标注；取值设置为100-20000，默认值为8000，用于去除较大面积的伪缺陷；
+	unsigned int   uLengthWidthRatio;//去除伪缺陷，当缺陷长宽比大于uLengthWidthRatio时，不对缺陷进行标注；取值设置为4-100，默认值为4，用于去除狭长的边缘伪缺陷；一般情况下不用调节
+}RxDetInfo;
+
+
+
+// 缺陷信息结构体
+typedef struct _tagRxDefInfo{
+	unsigned int    uPtNumber;    // 缺陷像素个数（缺陷面积）
+	unsigned int    uContourPtNumber; //缺陷外轮廓像素个数
+	unsigned int    uDefDia;      //缺陷直径（9.7增加）
+	unsigned int    pDefTypePtr;  // 缺陷类型，1表示气孔，2表示缩松缩孔，3表示裂纹，4表示夹渣
+	unsigned int*   pPtXPosPtr;   // 缺陷外轮廓像素X坐标
+	unsigned int*   pPtYPosPtr;   // 缺陷外轮廓像素Y坐标
+}RxDefInfo;
+
+
+
+// 输出检测信息结构体
+typedef struct _tagRxDefResult_
+{
+	unsigned int    uDefNumber;     // 有无缺陷, 0表示无缺陷，1表示1个缺陷
+	RxDefInfo*      pDefInfoPtr;    //缺陷信息结构体指针
+}RxDefResult;
+
+
+
+
+
+
+3.ZxDefect.dll测试程序如下：
+#include "RxDefect.h"
+
+uchar* matToUchar(Mat img, unsigned int img_width, unsigned int img_height);
+
+int main()
+{
+	Mat src = imread("E:/project of ruixin/资料数据/轮毂图像/9.14/1.bmp");
+	Size ResImgSiz = Size(src.cols*0.3, src.rows*0.3);
+	resize(src, src, ResImgSiz);
+	if (src.channels() == 3)
+	{
+		cvtColor(src, src, CV_BGR2GRAY);
+	}
+	uchar * p1 = matToUchar(src, src.cols, src.rows);
+	uint cha = src.channels();
+
+	RxDetInfo input;
+	input.uImgChannel = cha;
+	input.pImgPtr = p1;
+	input.uImgWidth = src.cols;
+	input.uImgHeight = src.rows;
+	input.uDetLightDark = -1;
+	input.uMeanMaskSize = 25;
+	input.uLowThreshold = 15;
+	input.uHighThreshold = 50;
+	input.uLowTErodeNum = 0;
+	input.uLowTDilateNum = 0;
+	input.uHighTErodeNum = 0;
+	input.uErodeNum = 1;
+	input.uDilateNum = 0;
+	//去除伪缺陷参数
+	input.uMinArea = 10;
+	input.uMaxArea = 8000;
+	input.uLengthWidthRatio = 4;
+
+
+	RxDefResult result;
+
+
+	////测试缺陷检测算法的运算时间
+	DWORD start_time = GetTickCount();
+	findDefect(&input, &result);
+	DWORD end_time = GetTickCount();
+	cout << "The run time is:" << (end_time - start_time) << "ms!" << endl;
+	
+
+	cout << result.uDefNumber << endl;
+
+
+	for (int i = 0; i < result.uDefNumber; ++i)
+	{
+		cout << result.pDefInfoPtr[i].pDefTypePtr << endl;
+		cout << result.pDefInfoPtr[i].uDefDia << endl;          //输出缺陷直径
+		cout << result.pDefInfoPtr[i].uPtNumber << endl;        //cout直接输出指针，是输出的指针指向的内容,输出缺陷面积点数
+		cout << result.pDefInfoPtr[i].uContourPtNumber << endl; //输出缺陷外轮廓点数
+		for (int j = 0; j < result.pDefInfoPtr[i].uContourPtNumber; ++j)
+		{
+			cout << result.pDefInfoPtr[i].pPtXPosPtr[j] << endl;  //C++中，如果变量或对象是指针类型，可以使用static_cast转换一下来得到其地址
+			cout << result.pDefInfoPtr[i].pPtYPosPtr[j] << endl;
+		}
+	}
+	resetDefectInfo();
+	system("pause");
+	waitKey(10000);
+	return 0;
+}
+
+
+
+// 函数功能:   将uchar类型的数据转换为Mat类型
+// 函数返回值：零代表成功，非零代表失败
+// 函数输入值：img  - 输入法人Mat类图像，img_width-图像宽度，img_height-图像高度
+uchar* matToUchar(Mat img, unsigned int img_width, unsigned int img_height)
+{
+	if (img.channels() == 3)
+	{
+		uchar * p = new uchar[img_width * img_height * 3];
+		for (int i = 0; i < img_width * img_height * 3; i++)
+		{
+			p[i] = (uchar)img.at<Vec3b>(i / (img_width * 3), (i % (img_width * 3)) / 3)[i % 3];
+		}
+		return p;
+	}
+	else if (img.channels() == 1)
+	{
+		uchar * p = new uchar[img_width * img_height];
+		for (int i = 0; i<img_height; ++i) //行数--高度
+		{
+			unsigned char* data = img.ptr<unsigned char>(i); //指向第i行的数据 
+			for (int j = 0; j<img_width; ++j) //列数 -- 宽度 
+			{
+				p[i*img_width + j] = data[j];
+			}
+		}
+		return p;
+	}
+}
+
+
