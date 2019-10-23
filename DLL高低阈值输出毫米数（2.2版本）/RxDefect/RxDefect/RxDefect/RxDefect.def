@@ -1,0 +1,3 @@
+LIBRARY RxDefect
+EXPORTS findDefect
+EXPORTS resetDefectInfo
