@@ -1,0 +1,31 @@
+﻿生成启动时间为 2019/10/8 23:04:32。
+     1>项目“E:\project of ruixin\768\DefectSegmentation\DLL测试及制作\DLL高低阈值输出毫米数（2.2版本）\RxDefect\RxDefect\RxDefect\RxDefect.vcxproj”在节点 2 上(Build 个目标)。
+     1>ClCompile:
+         D:\Installation program\vs2013\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /sdl /O2 /Oi /Oy- /GL /D _WINDLL /D _MBCS /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt RxDefect.cpp
+         RxDefect.cpp
+     1>C:\1\opencv\build\include\opencv2/core/mat.hpp(1965): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+     1>C:\1\opencv\build\include\opencv2/core/persistence.hpp : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+     1>C:\1\opencv\build\include\opencv2/core/utility.hpp : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+     1>RxDefect.cpp(21): warning C4018: “<”: 有符号/无符号不匹配
+     1>RxDefect.cpp(30): warning C4018: “<”: 有符号/无符号不匹配
+     1>RxDefect.cpp(33): warning C4018: “<”: 有符号/无符号不匹配
+     1>RxDefect.cpp(292): warning C4244: “=”: 从“double”转换到“unsigned int”，可能丢失数据
+     1>RxDefect.cpp(293): warning C4244: “=”: 从“double”转换到“unsigned int”，可能丢失数据
+     1>RxDefect.cpp(300): warning C4244: “=”: 从“double”转换到“unsigned int”，可能丢失数据
+     1>RxDefect.cpp(301): warning C4244: “=”: 从“double”转换到“unsigned int”，可能丢失数据
+     1>RxDefect.cpp(310): warning C4244: “=”: 从“double”转换到“unsigned int”，可能丢失数据
+     1>RxDefect.cpp(311): warning C4244: “=”: 从“double”转换到“unsigned int”，可能丢失数据
+     1>RxDefect.cpp(320): warning C4244: “=”: 从“double”转换到“unsigned int”，可能丢失数据
+     1>RxDefect.cpp(321): warning C4244: “=”: 从“double”转换到“unsigned int”，可能丢失数据
+       Link:
+         D:\Installation program\vs2013\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"E:\project of ruixin\768\DefectSegmentation\DLL测试及制作\DLL高低阈值输出毫米数（2.2版本）\RxDefect\RxDefect\Release\RxDefect.dll" /NOLOGO opencv_world300.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /DEF:"RxDefect.def" /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"E:\project of ruixin\768\DefectSegmentation\DLL测试及制作\DLL高低阈值输出毫米数（2.2版本）\RxDefect\RxDefect\Release\RxDefect.pdb" /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"E:\project of ruixin\768\DefectSegmentation\DLL测试及制作\DLL高低阈值输出毫米数（2.2版本）\RxDefect\RxDefect\Release\RxDefect.lib" /MACHINE:X86 /SAFESEH /DLL Release\RxDefect.obj
+            正在创建库 E:\project of ruixin\768\DefectSegmentation\DLL测试及制作\DLL高低阈值输出毫米数（2.2版本）\RxDefect\RxDefect\Release\RxDefect.lib 和对象 E:\project of ruixin\768\DefectSegmentation\DLL测试及制作\DLL高低阈值输出毫米数（2.2版本）\RxDefect\RxDefect\Release\RxDefect.exp
+         正在生成代码
+     1>e:\project of ruixin\768\defectsegmentation\dll测试及制作\dll高低阈值输出毫米数（2.2版本）\rxdefect\rxdefect\rxdefect\rxdefect.cpp(40): warning C4715: “ucharToMat”: 不是所有的控件路径都返回值
+         已完成代码的生成
+         RxDefect.vcxproj -> E:\project of ruixin\768\DefectSegmentation\DLL测试及制作\DLL高低阈值输出毫米数（2.2版本）\RxDefect\RxDefect\Release\RxDefect.dll
+     1>已完成生成项目“E:\project of ruixin\768\DefectSegmentation\DLL测试及制作\DLL高低阈值输出毫米数（2.2版本）\RxDefect\RxDefect\RxDefect\RxDefect.vcxproj”(Build 个目标)的操作。
+
+生成成功。
+
+已用时间 00:00:09.23
