@@ -1,0 +1,40 @@
+1.dll测试程序（将头文件DefectDefecting.h加入到工程中）
+#pragma comment (lib, "DefectDefecting.lib")
+#include "DefectDefecting.h"
+int main()
+{
+	Mat a = imread("C:/Users/JTY/Desktop/333.bmp");
+	Result res1;
+	res1=findDefect(a, 15, 5, 2, 2);
+	cout << res1.bufbDefSigned << endl;
+	cout << res1.bufQuexian << endl;
+	cout << res1.DefectArea << endl;
+	imshow("缺陷检测图像", res1.BiaojiImg);
+	waitKey();
+}
+
+
+2.dll中主要内容为检测函数
+Result findDefect(Mat& ROIimg, UINT backgSize, UINT fengeT, UINT erodeNum, UINT dilateNum);
+备注（1）Result为结构体类型，包含函数返回的值，为函数的输出参数
+typedef struct Result
+{
+	Mat BiaojiImg;                  //标记的缺陷图像
+	string bufbDefSigned;           //有无缺陷
+	string bufQuexian;              //缺陷类型
+	double DefectArea;              //缺陷总面积
+}Result;
+
+
+备注（2）findDefect（）的输入参数解释
+         Mat& ROIimg：被检测的图像，整体图像或ROI图像
+         UINT backgSize：均值模板大小，最小值应为3，为奇数递增，默认值设为15
+         UINT fengeT：分割阈值，0-50,默认值应设为5
+         UINT erodeNum：分割结果腐蚀次数，取值设置为1-5，默认值为2
+         UINT erodeNum：分割结果膨胀次数，取值设置为1-5，默认值为2
+
+
+
+
+
+
